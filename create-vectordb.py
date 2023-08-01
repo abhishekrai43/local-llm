@@ -26,16 +26,11 @@ llama_path = './models/ggml-model-q4_0.bin'
 # Calback manager for handling the calls with  the model
 callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
 
-# assign the path for the 2 models GPT4All and Alpaca for the embeddings 
-gpt4all_path = './models/gpt4all-converted.bin' 
-## REMOVED ## llama_path = './models/ggml-model-q4_0.bin' 
-# Calback manager for handling the calls with  the model
-callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
-# create the embedding object
-## REMOVED ## embeddings = LlamaCppEmbeddings(model_path=llama_path)
+
+
 embeddings = HuggingFaceEmbeddings(model_name='sentence-transformers/all-MiniLM-L6-v2')
 # create the GPT4All llm object
-llm = GPT4All(model=gpt4all_path, callback_manager=callback_manager, verbose=True)
+
 
 # Split text 
 def split_chunks(sources):
@@ -55,23 +50,9 @@ def create_index(chunks):
     return search_index
 
 
-def similarity_search(query, index):
-    # k is the number of similarity searched that matches the query
-    # default is 4
-    matched_docs = index.similarity_search(query, k=3) 
-    sources = []
-    for doc in matched_docs:
-        sources.append(
-            {
-                "page_content": doc.page_content,
-                "metadata": doc.metadata,
-            }
-        )
-
-    return matched_docs, sources
 
 # get the list of pdf files from the docs directory into a list  format
-pdf_folder_path = './doc_llm'
+pdf_folder_path = './docs'
 doc_list = [s for s in os.listdir(pdf_folder_path) if s.endswith('.pdf')]
 num_of_docs = len(doc_list)
 # create a loader for the PDFs from the path
